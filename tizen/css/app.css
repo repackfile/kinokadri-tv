@@ -1,0 +1,445 @@
+/* KinoKadri — Samsung Tizen TV. Android TV აპის ზუსტი ზომები: ეკრანი 1200dp → 1dp = 1.6px (1920px). */
+@font-face { font-family: Nino; src: url(../fonts/bpg_nino_caps.ttf); }
+:root {
+  --brand: #7B61FF; --brand2: #9E61FF; --bg: #1D232D; --surface: #2A323F; --surface-hi: #364050;
+  --text: #fff; --body: #CCCDD2; --dim: rgba(204,205,210,.6); --imdb: #F5C518; --tmdb: #00D1BF;
+  --grad: linear-gradient(90deg, #7B61FF, #9E61FF); --grad-hi: linear-gradient(90deg, #8E78FF, #B07BFF);
+  --shadow: 0 18px 40px rgba(0,0,0,.65);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1920px; height: 1080px; overflow: hidden; background: var(--bg); color: var(--text); font-family: Nino, sans-serif; font-size: 22px; }
+body.playing { background: transparent; }
+[hidden] { display: none !important; }
+svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.f { outline: none; cursor: pointer; }
+.pic { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.ic { display: inline-block; width: 1em; height: 1em; background: currentColor; -webkit-mask: var(--i) center / contain no-repeat; mask: var(--i) center / contain no-repeat; flex: none; }
+.orig, .card .o, .meta, .rate { font-family: Roboto, "Samsung One", sans-serif; }
+
+/* ===================== ზედა მენიუ (top_bar: 36/18/28/34dp, ჩანართი 15sp, ხატულა 40dp) ===================== */
+#top { position: fixed; z-index: 30; top: 0; left: 0; right: 0; display: flex; align-items: center; padding: 29px 45px 54px 58px;
+  background: linear-gradient(180deg, rgba(29,35,45,.95), rgba(29,35,45,.6) 50%, rgba(29,35,45,0)); transition: transform .18s, opacity .18s; }
+#top.hide { transform: translateY(-100%); opacity: 0; }
+.wordmark { display: flex; align-items: center; gap: 16px; flex: none; }
+.wordmark img { width: 61px; height: 61px; object-fit: contain; }
+.wordmark span { font-family: Roboto, sans-serif; font-weight: 900; font-size: 37px; letter-spacing: .07em; }
+#nav { display: flex; margin-left: 35px; flex: 1; }
+.nav { position: relative; font-size: 24px; padding: 14px 18px 18px; border-radius: 13px; color: rgba(255,255,255,.65); white-space: nowrap; }
+.nav.on { color: #fff; }
+.nav.on::after { content: ""; position: absolute; left: 18px; right: 18px; bottom: 0; height: 5px; background: var(--brand2); }
+.nav.focus { background: var(--grad); color: #fff; }
+.nav.focus::after { display: none; }
+#top-icons { display: flex; gap: 6px; }
+.nav.icon { width: 64px; height: 64px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 30px; color: rgba(255,255,255,.9); }
+.nav.icon.on::after { display: none; }
+
+/* ===================== გვერდითა მენიუ (rail 98dp → გაშლილი 280dp) ===================== */
+#rail { position: fixed; z-index: 40; left: 0; top: 0; bottom: 0; width: 157px; padding: 42px 16px 0; overflow: hidden;
+  background: linear-gradient(180deg, #0D1036, var(--bg)); box-shadow: inset -2px 0 0 rgba(255,255,255,.06); transition: width .17s; }
+#rail.open { width: 448px; }
+#rail-scrim { position: fixed; z-index: 35; inset: 0; background: rgba(0,0,0,.6); }
+.rail-logo { height: 77px; margin-bottom: 42px; display: flex; align-items: center; justify-content: center; }
+.rail-logo .mark { width: 77px; height: 77px; object-fit: contain; }
+.rail-logo .wordmark { display: none; margin-left: 16px; }
+.rail-logo .wordmark img { width: 67px; height: 67px; }
+#rail.open .rail-logo { justify-content: flex-start; }
+#rail.open .rail-logo .mark { display: none; }
+#rail.open .rail-logo .wordmark { display: flex; }
+.ritem { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 93px; margin-bottom: 6px; border-radius: 13px; color: var(--brand2); }
+.ritem .ic { font-size: 38px; }
+.ritem span { font-size: 15px; color: rgba(255,255,255,.7); margin-top: 6px; white-space: nowrap; }
+.ritem.on { background: var(--surface); }
+.ritem.focus { background: var(--grad); color: #fff; }
+.ritem.focus span { color: #fff; }
+#rail.open .ritem { flex-direction: row; justify-content: flex-start; height: 80px; padding: 0 19px 0 26px; }
+#rail.open .ritem span { font-size: 26px; color: #fff; margin: 0 0 0 26px; }
+.rsep { height: 2px; background: rgba(255,255,255,.08); margin: 6px 13px 13px; }
+body.side #view { left: 157px; }
+body.in-player #top, body.in-player #rail, body.in-player #rail-scrim { visibility: hidden; }
+
+#view { position: absolute; top: 0; right: 0; bottom: 0; left: 0; overflow: hidden; }
+.scroll { position: absolute; inset: 0; overflow: hidden; }
+.scroll > .inner { transition: transform .25s ease; padding-bottom: 90px; }
+.pad { padding: 150px 64px 0; }
+body.side .pad { padding-top: 64px; }
+
+/* ===================== სლაიდერი (item_hero 456dp, შიგთავსი 560dp) ===================== */
+.hero { position: relative; height: 730px; overflow: hidden; }
+.hero .bg, .d-head .bg { position: absolute; inset: 0; }
+.hero .bg .pic, .d-head .bg .pic { object-position: center 20%; }
+.hero .bg::after, .d-head .bg::after { content: ""; position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(90deg, rgba(29,35,45,.9) 0%, rgba(29,35,45,.4) 26%, rgba(29,35,45,0) 52%),
+              linear-gradient(180deg, rgba(0,0,0,.5) 0%, rgba(29,35,45,.2) 50%, var(--bg) 100%); }
+.hero .info { position: absolute; z-index: 2; left: 64px; bottom: 54px; width: 896px; }
+.orig { font-size: 21px; color: var(--body); letter-spacing: .5px; text-transform: uppercase; }
+.hero h1, .d-head h1 { font-weight: normal; font-size: 58px; line-height: 1.2; margin-top: 13px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.meta { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 19px; font-size: 21px; color: var(--body); }
+.meta .dot { color: var(--dim); }
+.rate { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px 5px 8px; border-radius: 6px; background: rgba(0,0,0,.55); font-size: 18px; color: #fff; }
+.rate b { font-size: 14px; padding: 2px 5px; border-radius: 3px; color: #000; }
+.rate.imdb b { background: var(--imdb); } .rate.tmdb b { background: var(--tmdb); }
+.dots-nav { position: absolute; z-index: 2; left: 0; right: 0; bottom: 19px; display: flex; justify-content: center; gap: 8px; }
+.dots-nav i { width: 10px; height: 10px; border-radius: 5px; background: rgba(255,255,255,.35); transition: width .3s; }
+.dots-nav i.on { width: 30px; background: var(--brand2); }
+
+/* ===================== ღილაკები (GradientButton 46dp, 16sp; SurfaceButton) ===================== */
+.btns { display: flex; align-items: center; gap: 19px; margin-top: 26px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 14px; height: 74px; padding: 0 38px; border-radius: 13px; font-size: 26px; color: #fff;
+  background: rgba(255,255,255,.15); transition: transform .14s; white-space: nowrap; }
+.btn svg { font-size: 28px; }
+.btn.primary { background: linear-gradient(90deg, rgba(123,97,255,.7), rgba(158,97,255,.7)); }
+.btn.primary svg { fill: #fff; stroke: none; }
+.btn.focus { transform: scale(1.05); background: var(--grad); }
+.btn.primary.focus { background: var(--grad-hi); }
+.btn.sq { width: 80px; height: 80px; padding: 0; }
+.btn.sq svg { font-size: 34px; }
+.btn.sq.fav svg { fill: var(--brand2); stroke: var(--brand2); }
+
+/* ===================== სექციის სათაური და რიგი (item_row / view_section_title) ===================== */
+.sec-title { display: flex; align-items: center; padding: 42px 64px 0; }
+.sec-title h2 { position: relative; font-weight: normal; font-size: 30px; line-height: 32px; padding-left: 22px; }
+.sec-title h2::before { content: ""; position: absolute; left: 0; top: 0; width: 6px; height: 32px; border-radius: 3px; background: var(--grad); }
+.sec-title.yellow h2::before { background: var(--imdb); }
+.sec-title h2.big { font-size: 45px; line-height: 48px; } .sec-title h2.big::before { height: 46px; }
+.sec-extra { margin-left: 16px; font-size: 24px; color: var(--dim); font-family: Roboto, sans-serif; }
+.row .sec-title { padding-top: 35px; }
+.strip { display: flex; gap: 22px; padding: 22px 64px 10px; transition: transform .25s ease; }
+
+/* პოსტერი (card_poster 126dp; ფოკუსზე ×1.1 და ჩრდილი) */
+.card { flex: none; width: 202px; transition: transform .14s; transform-origin: 50% 40%; position: relative; }
+.card .img { position: relative; width: 100%; padding-top: 150%; border-radius: 16px; background: var(--surface); overflow: hidden; }
+.card .img::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,.6) 0%, rgba(0,0,0,0) 22%); }
+.card .badge, .card .yr, .card .langs, .card .show-ic, .card .play, .card .epi { position: absolute; z-index: 1; }
+.card .badge { top: 10px; left: 10px; display: flex; align-items: center; background: rgba(0,0,0,.6); border-radius: 6px; padding: 4px 8px 4px 5px; font-family: Roboto, sans-serif; font-size: 17px; }
+.card .badge .i { background: var(--imdb); color: #000; font-size: 13px; font-weight: bold; padding: 1px 4px; border-radius: 3px; margin-right: 6px; }
+.card .yr { top: 10px; right: 10px; font-family: Roboto, sans-serif; font-size: 16px; padding: 3px 10px; border-radius: 6px; background: rgba(0,0,0,.6); }
+.card .show-ic { top: 10px; right: 10px; width: 35px; height: 35px; border-radius: 50%; background: var(--brand); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.card .langs { left: 10px; bottom: 10px; display: flex; gap: 5px; }
+.card .langs span { font-family: Roboto, sans-serif; font-size: 14px; padding: 2px 6px; border-radius: 4px; background: rgba(0,0,0,.45); }
+.card .t { margin-top: 11px; font-size: 21px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card .o { margin-top: 6px; font-size: 17.6px; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card.focus { transform: scale(1.1); z-index: 3; }
+.card.focus .img { box-shadow: var(--shadow); }
+/* განიერი (card_tv 252dp, 0.635; ფოკუსზე ×1.06 და ▶) */
+.card.wide { width: 403px; }
+.card.wide .img { padding-top: 63.5%; }
+.card.wide .img::after { background: linear-gradient(0deg, rgba(0,0,0,.65) 0%, rgba(0,0,0,0) 45%); }
+.card .langs.top { top: 13px; bottom: auto; left: 13px; }
+.card .play { left: 50%; top: 50%; width: 102px; height: 102px; margin: -51px 0 0 -51px; border-radius: 50%; background: rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; font-size: 46px; opacity: 0; transition: opacity .14s; }
+.card .play svg, .ep .play svg { fill: #fff; stroke: none; }
+.card .epi { left: 16px; bottom: 14px; font-size: 19px; }
+.card .yr.bot { top: auto; bottom: 14px; right: 16px; }
+.card.wide.focus { transform: scale(1.06); }
+.card.wide.focus .play, .ep.focus .play { opacity: 1; }
+
+/* ბადე: ფილმები 7 სვეტად, სერიალები 4 (Android-ის COLS 28) */
+.grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 40px 22px; padding: 22px 64px 40px; }
+.grid.wide { grid-template-columns: repeat(4, 1fr); }
+.grid .card, .grid .card.wide { width: auto; }
+.pad .grid { padding-left: 0; padding-right: 0; }
+
+/* ===================== სერიალები: დღის/კვირის/თვის (item_top_shows) ===================== */
+.row-head { justify-content: space-between; padding-right: 64px; }
+.tabs { display: flex; gap: 6px; background: rgba(255,255,255,.07); border-radius: 13px; padding: 5px; }
+.tab { border-radius: 11px; color: rgba(255,255,255,.65); font-size: 22px; padding: 10px 26px; white-space: nowrap; }
+.tab.on { background: #7B61FF; color: #fff; }
+.tab.focus { background: var(--grad-hi); color: #fff; }
+.tops-grid { display: flex; gap: 20px; height: 464px; margin: 22px 64px 0; }
+.tops-small { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: 1fr 1fr; gap: 20px; }
+.tcard { position: relative; display: block; border-radius: 14px; overflow: hidden; background: var(--surface); transition: transform .14s; }
+.tcard.big { flex: none; width: 720px; }
+.tcard::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,.85), rgba(0,0,0,0) 55%); }
+.tc-text { position: absolute; z-index: 1; left: 18px; right: 18px; bottom: 14px; }
+.tc-t { font-size: 24px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tcard.big .tc-t { font-size: 34px; }
+.tc-s { font-size: 18px; color: var(--body); margin-top: 4px; }
+.tcard.focus { transform: scale(1.06); box-shadow: var(--shadow); z-index: 2; }
+.tcard.big.focus { transform: scale(1.03); }
+.skel { background: linear-gradient(90deg, var(--surface) 0%, var(--surface-hi) 50%, var(--surface) 100%); background-size: 200% 100%; animation: sk 1.2s infinite linear; }
+@keyframes sk { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+/* ===================== დღის სერიალი (item_daily) ===================== */
+.daily { position: relative; margin: 42px 64px 0; border-radius: 20px; overflow: hidden; padding: 44px; }
+.daily-bg { position: absolute; inset: 0; }
+.daily-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(20,24,32,.96) 0%, rgba(20,24,32,.82) 50%, rgba(20,24,32,.55) 100%); }
+.daily-body { position: relative; z-index: 1; display: flex; gap: 40px; }
+.daily-poster { flex: none; position: relative; width: 304px; height: 456px; border-radius: 14px; overflow: hidden; transition: transform .14s; box-shadow: 0 10px 30px rgba(0,0,0,.5); }
+.daily-poster.focus { transform: scale(1.05); box-shadow: var(--shadow); }
+.daily-tag { position: absolute; z-index: 1; left: 12px; top: 12px; background: var(--brand); border-radius: 8px; padding: 5px 12px; font-size: 18px; }
+.daily-info { flex: 1; min-width: 0; }
+.daily-info .meta { margin-top: 6px; }
+.daily-title { font-size: 56px; line-height: 1.15; margin: 16px 0 6px; }
+.daily .desc { margin-top: 20px; font-size: 23px; line-height: 1.55; color: var(--body); display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.daily-eps-t { position: relative; z-index: 1; margin: 34px 0 16px; font-size: 26px; }
+.daily-eps { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; }
+.daily-eps .ep { width: auto; }
+
+/* ===================== ეპიზოდი (card_episode 210dp, 16:9) ===================== */
+.ep { flex: none; width: 336px; transition: transform .14s; }
+.ep .img { position: relative; width: 100%; padding-top: 56.25%; border-radius: 16px; background: var(--surface); overflow: hidden; }
+.ep .play { position: absolute; z-index: 1; left: 50%; top: 50%; width: 92px; height: 92px; margin: -46px 0 0 -46px; border-radius: 50%; background: rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; font-size: 40px; opacity: 0; transition: opacity .14s; }
+.ep .prog { position: absolute; z-index: 1; left: 0; bottom: 0; height: 6px; background: var(--brand2); }
+.ep .n { margin-top: 13px; font-size: 19px; color: var(--brand2); }
+.ep .t { margin-top: 6px; font-size: 21px; font-family: Roboto, Nino, sans-serif; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.ep.focus { transform: scale(1.06); }
+.ep.focus .img { box-shadow: var(--shadow); }
+
+/* მსახიობი (card_person 100dp, ფოტო 80dp) */
+.person { flex: none; width: 160px; text-align: center; transition: transform .14s; }
+.person .ph { position: relative; width: 128px; height: 128px; margin: 0 auto; border-radius: 50%; overflow: hidden; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 60px; color: var(--dim); }
+.person .t { margin-top: 11px; font-size: 19px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.person .o { margin-top: 5px; font-size: 16px; color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.person.focus { transform: scale(1.08); }
+.person.focus .ph { box-shadow: 0 0 0 4px var(--brand2), var(--shadow); }
+
+/* ===================== ფილმის გვერდი (activity_details: ჰედერი 400dp, შიგთავსი 620dp) ===================== */
+.d-head { position: relative; height: 640px; overflow: hidden; }
+.d-info { position: absolute; z-index: 2; left: 64px; bottom: 26px; width: 992px; }
+.d-tags { display: flex; gap: 10px; margin-top: 16px; }
+.d-tags span { font-family: Roboto, sans-serif; font-size: 18px; padding: 6px 14px; border-radius: 5px; background: rgba(0,0,0,.45); }
+.chips { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.chips span { font-size: 19px; padding: 6px 14px; border-radius: 10px; background: rgba(123,97,255,.25); border: 2px solid rgba(123,97,255,.6); }
+.d-actions { margin: 0; padding: 32px 64px 0; }
+.d-actions .btn { height: 80px; }
+.d-desc { width: 1152px; margin: 32px 64px 0; font-size: 24px; line-height: 1.5; color: var(--body); display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
+.d-desc.open { -webkit-line-clamp: 40; }
+.more-btn { display: inline-block; margin: 6px 0 0 54px; padding: 8px 16px; border-radius: 10px; font-size: 22px; color: var(--brand2); }
+.more-btn.focus { background: var(--grad); color: #fff; }
+.tabs-line { display: flex; justify-content: center; gap: 19px; margin-top: 42px; }
+.tline { position: relative; height: 70px; line-height: 70px; padding: 0 35px; border-radius: 13px; font-size: 26px; color: rgba(255,255,255,.65); }
+.tline.on { color: #fff; }
+.tline.on::after { content: ""; position: absolute; left: 18px; right: 18px; bottom: 0; height: 5px; background: var(--brand2); }
+.tline.focus { background: var(--grad); color: #fff; }
+.tline.focus::after { display: none; }
+.divider { height: 2px; background: rgba(255,255,255,.08); margin: 10px 64px 32px; }
+.chips-line { display: flex; gap: 13px; padding: 3px 64px 16px; }
+.chip { padding: 10px 22px; border-radius: 10px; font-size: 22px; background: rgba(255,255,255,.08); color: var(--body); white-space: nowrap; }
+.chip.on { background: var(--brand); color: #fff; }
+.chip.focus { background: var(--grad-hi); color: #fff; }
+.dirs { display: flex; gap: 22px; padding: 22px 64px 16px; }
+.dir { display: flex; align-items: center; gap: 22px; width: 704px; padding: 19px; border-radius: 16px; background: rgba(255,255,255,.05); transition: transform .14s; }
+.dir .ph { position: relative; flex: none; width: 96px; height: 96px; border-radius: 50%; overflow: hidden; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 46px; color: var(--dim); }
+.dir .dn { font-size: 26px; } .dir .dr { margin-top: 8px; font-size: 21px; color: var(--dim); } .dir .dl { margin-top: 6px; font-size: 19px; color: var(--brand2); }
+.dir.focus { transform: scale(1.03); background: rgba(123,97,255,.25); box-shadow: 0 0 0 3px var(--brand2); }
+
+/* ეპიზოდების შეფასებები (view_ep_ratings / view_ep_bar) */
+.er { padding: 0 64px; }
+.er-head { display: flex; align-items: center; justify-content: space-between; }
+.er-head .sec-title { padding: 0; }
+.er-head .tabs .tab { font-size: 21px; padding: 8px 21px; }
+.er-sum { margin: 10px 0 22px; font-size: 21px; color: #9A9CB3; font-family: Roboto, Nino, sans-serif; }
+.er-row .strip { padding: 0; align-items: flex-end; height: 260px; gap: 13px; }
+.bar { flex: none; width: 106px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+.bar .col { width: 100%; display: flex; justify-content: center; padding-top: 8px; border-radius: 10px 10px 5px 5px; background: rgba(255,255,255,.12); font-family: Roboto, sans-serif; font-size: 21px; color: rgba(255,255,255,.75); }
+.bar .be { margin-top: 10px; font-family: Roboto, sans-serif; font-size: 18px; color: #9A9CB3; }
+.bar.sel .col, .bar.focus .col { background: var(--imdb); color: #000; font-weight: bold; }
+.bar.focus .be { color: #fff; }
+.er-card { display: flex; align-items: center; margin-top: 29px; padding: 19px; border-radius: 19px; background: rgba(255,255,255,.04); }
+.ec-img { position: relative; flex: none; width: 416px; height: 234px; border-radius: 16px; overflow: hidden; background: var(--surface); }
+.ec-main { flex: none; width: 520px; margin-left: 29px; }
+.ec-se { font-size: 19px; color: #9A9CB3; } .ec-t { margin: 6px 0 16px; font-size: 32px; font-family: Roboto, Nino, sans-serif; }
+.ec-rts { display: flex; align-items: center; gap: 10px; } .ec-v { font-size: 21px; color: #9A9CB3; margin-right: 16px; font-family: Roboto, sans-serif; }
+.ec-div { width: 2px; height: 70px; margin: 0 35px; background: rgba(255,255,255,.1); }
+.ec-desc { flex: 1; font-size: 22px; line-height: 1.5; color: #C9CBE0; font-family: Roboto, Nino, sans-serif; }
+.ec-go { margin-top: 19px; font-size: 21px; color: #9B86FF; }
+
+/* კომენტარები (view_comment_form / view_comment 720dp) */
+.cform { width: 1152px; margin: 22px 64px 26px; padding: 22px; border-radius: 19px; background: rgba(255,255,255,.05); }
+.field { display: block; border-radius: 13px; background: rgba(255,255,255,.08); border: 3px solid transparent; }
+.field + .field { margin-top: 16px; }
+.field textarea, .field input { width: 100%; background: none; border: 0; outline: 0; resize: none; color: #fff; font: inherit; font-size: 24px; padding: 16px 19px; font-family: Nino, Roboto, sans-serif; }
+.field.focus, .field:focus-within { border-color: var(--brand2); }
+.cf-row { display: flex; align-items: center; margin-top: 19px; }
+.cf-l { font-size: 22px; color: var(--body); }
+.cf-stars { display: flex; flex: 1; margin-left: 13px; }
+.star { padding: 0 10px; height: 64px; line-height: 64px; border-radius: 11px; font-size: 35px; color: rgba(255,255,255,.5); }
+.star.on { color: var(--imdb); }
+.star.focus { background: var(--grad-hi); color: #fff; }
+.cf-msg { margin-top: 16px; font-size: 19px; color: var(--dim); } .cf-msg.err { color: #FF8A8A; }
+.comment { display: flex; width: 1152px; margin: 0 64px 16px; padding: 22px; border-radius: 19px; background: rgba(255,255,255,.04); }
+.c-av { position: relative; flex: none; width: 64px; height: 64px; border-radius: 50%; overflow: hidden; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 34px; color: var(--dim); }
+.c-main { flex: 1; margin-left: 19px; }
+.c-head { display: flex; align-items: center; gap: 16px; font-size: 22px; } .c-stars { color: var(--imdb); font-size: 21px; } .c-date { color: var(--dim); font-size: 19px; font-family: Roboto, sans-serif; }
+.c-text { margin-top: 10px; font-size: 22px; line-height: 1.5; color: var(--body); font-family: Roboto, Nino, sans-serif; }
+.no-c { margin: 10px 64px 0; font-size: 22px; color: var(--body); }
+
+/* მსახიობის გვერდი */
+.person-page .pp-head { display: flex; gap: 48px; }
+.pp-ph { position: relative; flex: none; width: 320px; height: 448px; border-radius: 19px; overflow: hidden; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 120px; color: var(--dim); }
+.pp-main { flex: 1; min-width: 0; }
+.pp-main h1 { font-weight: normal; font-size: 58px; }
+.pp-main .sec-title { padding-left: 0; padding-top: 32px; }
+.pp-info { display: grid; grid-template-columns: repeat(2, 1fr); gap: 13px 32px; margin-top: 19px; font-size: 22px; }
+.pp-info span { display: block; color: var(--dim); font-size: 18px; margin-bottom: 3px; }
+.pp-main .d-desc { width: auto; margin: 19px 0 0; }
+.pp-main .more-btn { margin-left: -16px; }
+.person-page .sec-title { padding-left: 0; }
+
+/* ===================== კატალოგი (item_catalog_header) ===================== */
+.cat-head { position: relative; margin: 150px 64px 0; border-radius: 22px; overflow: hidden; padding: 38px 38px 29px; }
+body.side .cat-head { margin-top: 64px; }
+.cat-head.plain { padding: 10px 0 0; margin-bottom: 10px; }
+.cat-bg { position: absolute; inset: 0; }
+.cat-bg .pic { object-position: center 21%; }
+.cat-bg.tv .pic { object-position: center 40%; }
+.cat-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(29,35,45,.92), rgba(29,35,45,.55) 60%, rgba(29,35,45,.75)); }
+.cat-top { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: flex-start; }
+.cat-top h1 { font-weight: normal; font-size: 51px; }
+.cat-count { margin-top: 6px; font-size: 21px; color: var(--body); }
+.fbar { position: relative; z-index: 1; display: flex; gap: 3px; margin-top: 29px; padding: 6px; border-radius: 16px; background: rgba(20,24,32,.75); }
+.fitem { flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px; height: 70px; border-radius: 11px; font-size: 22px; color: rgba(255,255,255,.75); white-space: nowrap; overflow: hidden; padding: 0 13px; }
+.fitem i { font-style: normal; font-size: 16px; opacity: .7; }
+.fitem.on { color: var(--brand2); }
+.fitem.focus { background: var(--grad); color: #fff; }
+.fgo { flex: none; display: flex; align-items: center; height: 70px; padding: 0 38px; border-radius: 11px; font-size: 22px; background: var(--grad); transition: transform .14s; }
+.fgo.focus { background: var(--grad-hi); transform: scale(1.04); }
+.cat .grid { padding-top: 32px; }
+
+/* კატეგორიები (item_genre_tile) */
+.page-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 26px; }
+.page-head .sec-title { padding: 0; }
+.grid.genres { grid-template-columns: repeat(4, 1fr); gap: 26px; }
+.genre { position: relative; height: 232px; border-radius: 16px; overflow: hidden; background: var(--surface); transition: transform .14s; }
+.genre::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, rgba(0,0,0,.8), rgba(0,0,0,.05) 70%); }
+.genre div { position: absolute; z-index: 1; left: 22px; bottom: 18px; font-size: 32px; }
+.genre small { display: block; font-size: 19px; color: var(--body); margin-top: 4px; }
+.genre.focus { transform: scale(1.05); box-shadow: var(--shadow); z-index: 2; }
+
+/* ძებნა */
+.search-box { display: flex; align-items: center; gap: 19px; height: 90px; padding: 0 29px; border-radius: 16px; background: var(--surface); border: 3px solid transparent; font-size: 32px; }
+.search-box svg { font-size: 36px; color: var(--dim); }
+.search-box input { flex: 1; background: none; border: 0; outline: 0; color: #fff; font: inherit; font-family: Roboto, Nino, sans-serif; }
+.search-box.focus, .search-box:focus-within { border-color: var(--brand2); }
+
+/* პარამეტრები (activity_settings / view_style_option 330dp) */
+.st-title { font-weight: normal; font-size: 45px; }
+.st-label { margin-top: 48px; font-size: 26px; color: var(--body); }
+.st-opts { display: flex; gap: 32px; margin-top: 22px; }
+.st-opt { width: 528px; padding: 19px; border-radius: 19px; background: rgba(255,255,255,.05); border: 3px solid transparent; transition: transform .14s; }
+.st-opt.on { border-color: var(--brand); }
+.st-opt.focus { transform: scale(1.04); background: rgba(123,97,255,.22); }
+.st-prev { position: relative; height: 256px; border-radius: 13px; overflow: hidden; background: #1A1F28; }
+.st-prev i { position: absolute; display: block; border-radius: 3px; }
+.st-ot { display: flex; align-items: center; justify-content: space-between; margin-top: 22px; font-size: 29px; }
+.st-ot b { font-weight: normal; }
+.st-check { display: none; font-size: 18px; padding: 4px 13px; border-radius: 8px; background: var(--brand); }
+.st-opt.on .st-check { display: inline-block; }
+.st-od { margin-top: 10px; font-size: 21px; line-height: 1.45; color: var(--body); }
+.st-langs { display: inline-flex; margin-top: 19px; }
+.st-langs .tab { font-size: 24px; padding: 13px 35px; }
+.st-note { margin-top: 13px; font-size: 19px; color: var(--dim); }
+.st-ver { font-size: 22px; }
+.st-upd { display: flex; align-items: center; gap: 29px; margin-top: 19px; }
+.st-upd .btn { margin: 0; }
+.st-upd .st-note { margin-top: 6px; }
+
+/* პროფილი (activity_profile 440dp) */
+.profile { display: flex; justify-content: center; }
+.pf-box { width: 704px; margin-top: 60px; text-align: center; }
+.pf-logo img { height: 58px; }
+.pf-box h1 { font-weight: normal; font-size: 38px; margin-top: 45px; }
+.pf-hint { margin-top: 10px; font-size: 22px; color: var(--body); }
+.pf-box .field { margin-top: 26px; text-align: left; }
+.pf-box .field input { font-size: 26px; padding: 22px; }
+.pf-err { margin-top: 16px; font-size: 22px; color: #FF8A8A; }
+.pf-btn { margin-top: 29px; width: 100%; }
+.pf-av { position: relative; width: 154px; height: 154px; margin: 0 auto; border-radius: 50%; overflow: hidden; background: var(--surface); display: flex; align-items: center; justify-content: center; font-size: 80px; color: var(--dim); }
+.pf-name { margin-top: 19px; font-size: 35px; }
+
+/* სტატუსი / ჩატვირთვა */
+.status { text-align: center; padding: 260px 64px 0; }
+.cat .status, #s-res .status { padding-top: 80px; }
+.st-t { font-size: 38px; } .st-s { margin-top: 13px; font-size: 24px; color: var(--dim); }
+.status .btns { justify-content: center; }
+.dots { display: flex; gap: 14px; justify-content: center; }
+.dots i { width: 18px; height: 18px; border-radius: 50%; background: #fff; animation: hop 1s infinite ease-in-out; }
+.dots i:nth-child(2) { animation-delay: .15s; } .dots i:nth-child(3) { animation-delay: .3s; }
+@keyframes hop { 0%,60%,100% { transform: translateY(0); opacity: .45; } 30% { transform: translateY(-16px); opacity: 1; } }
+.loading { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.loading.inline { position: relative; height: 300px; }
+
+/* ===================== ფლეერი (activity_player) ===================== */
+#av { position: fixed; left: 0; top: 0; width: 1920px; height: 1080px; }
+#player { position: fixed; inset: 0; z-index: 50; transition: opacity .3s; }
+#player.idle .p-top, #player.idle #p-center, #player.idle .p-bottom, #player.idle #p-notice { opacity: 0; }
+#player .p-top, #player #p-center, #player .p-bottom { transition: opacity .3s; }
+#player::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.75), rgba(0,0,0,0) 22%, rgba(0,0,0,0) 62%, rgba(0,0,0,.85)); transition: opacity .3s; }
+#player.idle::before { opacity: 0; }
+.p-top { position: absolute; left: 64px; top: 48px; right: 64px; font-size: 34px; }
+#p-dots { position: absolute; left: 0; right: 0; top: 520px; }
+#p-center { position: absolute; left: 0; right: 0; top: 470px; display: flex; justify-content: center; align-items: center; gap: 120px; }
+.pbtn { background: none; border: 0; color: #fff; width: 96px; height: 96px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 56px; transition: background .15s, transform .15s; }
+.pbtn svg text { font-size: 6.5px; fill: currentColor; stroke: none; font-family: Roboto, sans-serif; }
+.pbtn.big { width: 140px; height: 140px; font-size: 84px; color: var(--brand2); }
+.pbtn.big svg { stroke-width: 1.6; }
+.pbtn.focus { background: rgba(255,255,255,.22); transform: scale(1.08); }
+#player.busy #p-play { visibility: hidden; }
+#p-subtext { position: absolute; left: 160px; right: 160px; bottom: 230px; text-align: center; font-family: Roboto, Nino, sans-serif; font-size: 40px; text-shadow: 0 2px 6px #000, 0 0 2px #000; }
+#player.idle #p-subtext { bottom: 90px; }
+.p-bottom { position: absolute; left: 64px; right: 64px; bottom: 40px; }
+.p-bar-row { display: flex; align-items: center; gap: 26px; font-family: Roboto, sans-serif; font-size: 24px; }
+#p-bar { flex: 1; height: 34px; position: relative; display: flex; align-items: center; }
+#p-bar::before { content: ""; position: absolute; left: 0; right: 0; height: 6px; border-radius: 3px; background: rgba(255,255,255,.25); }
+#p-buf, #p-played { position: absolute; left: 0; height: 6px; border-radius: 3px; }
+#p-buf { background: rgba(255,255,255,.4); } #p-played { background: var(--brand); }
+#p-knob { position: absolute; width: 22px; height: 22px; margin-left: -11px; border-radius: 50%; background: var(--brand2); transition: transform .15s; }
+#p-bar.focus #p-knob { transform: scale(1.6); box-shadow: 0 0 0 4px rgba(255,255,255,.35); }
+.p-pills { display: flex; gap: 16px; margin-top: 24px; }
+.pill { display: flex; align-items: center; gap: 13px; padding: 13px 22px; border-radius: 13px; background: rgba(255,255,255,.12); font-size: 22px; }
+.pill .ic { font-size: 29px; }
+.pill.focus { background: var(--grad); }
+#p-next { margin-left: auto; }
+#p-thumb { position: absolute; bottom: 140px; padding: 5px; border-radius: 10px; background: rgba(0,0,0,.9); border: 3px solid #fff; text-align: center; }
+#p-thumb-img { width: 358px; height: 179px; border-radius: 6px; background-repeat: no-repeat; background-color: #111; }
+#p-thumb-time { display: block; font-family: Roboto, sans-serif; font-weight: bold; font-size: 24px; margin: 4px 0 2px; }
+#p-notice { position: absolute; left: 64px; bottom: 230px; background: rgba(0,0,0,.7); padding: 14px 24px; border-radius: 12px; font-size: 24px; }
+#p-error { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,.8); text-align: center; }
+#p-error-t { font-size: 38px; } #p-error-s { margin: 16px 0 32px; font-size: 24px; color: var(--body); max-width: 1100px; }
+
+/* დიალოგი (popup_bg / opt_row_bg / view_range_row) */
+#dialog { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,.6); display: flex; align-items: center; justify-content: center; }
+.dlg { min-width: 600px; max-height: 960px; overflow: hidden; background: #262D3A; border-radius: 22px; padding: 32px; box-shadow: 0 30px 80px rgba(0,0,0,.6); }
+.dlg h3 { font-weight: normal; font-size: 32px; margin-bottom: 19px; }
+#dlg-list { max-height: 820px; overflow: hidden; }
+.opt { display: flex; align-items: center; gap: 19px; padding: 14px 22px; border-radius: 13px; font-size: 25px; white-space: nowrap; }
+.opt::before { content: ""; flex: none; width: 24px; height: 24px; border-radius: 50%; border: 3px solid var(--dim); }
+.opt.multi::before { border-radius: 6px; }
+.opt.on::before { border-color: var(--brand2); background: radial-gradient(var(--brand2) 45%, transparent 50%); }
+.opt.multi.on::before { background: var(--brand2); }
+.opt.focus { background: var(--grad); color: #fff; }
+.opt.focus::before { border-color: #fff; }
+.dlg-ok { margin-top: 19px; width: 100%; }
+.rrow { display: flex; align-items: center; gap: 22px; padding: 16px 22px; border-radius: 13px; font-size: 26px; }
+.rrow span { width: 120px; color: var(--body); } .rrow b { font-weight: normal; color: var(--dim); font-size: 34px; }
+.rrow em { font-style: normal; font-family: Roboto, sans-serif; min-width: 120px; text-align: center; font-size: 30px; }
+.rrow.focus { background: var(--grad); } .rrow.focus b, .rrow.focus span { color: #fff; }
+.rr-hint { margin-top: 16px; font-size: 19px; color: var(--dim); }
+#toast { position: fixed; z-index: 95; left: 50%; bottom: 80px; transform: translateX(-50%); background: rgba(0,0,0,.85); padding: 18px 32px; border-radius: 14px; font-size: 24px; }
+
+/* მენიუს გარეშე ეკრანები (ფილმის გვერდი, ძებნა, კატეგორიები, პარამეტრები, პროფილი, მსახიობი) */
+body.no-menu #top, body.no-menu #rail, body.no-menu #rail-scrim { display: none; }
+body.no-menu #view { left: 0; }
+body.no-menu .pad { padding-top: 64px; }
+body.no-menu .cat-head { margin-top: 48px; }
+
+/* ---- გასწორებები (Samsung-ზე ტესტის შემდეგ) ---- */
+/* AVPlay-ის ფენა შავია და მთელ ეკრანს ფარავს — ფოტოს ქვეშ ხაზი ჩანდა. ვიდეოს გარეშე დამალულია, ფონი აპის ფერია */
+#av { visibility: hidden; }
+body.playing #av { visibility: visible; }
+#view { background: var(--bg); }
+body.playing #view { background: transparent; }
+/* ფოტო შუაზე იჭრება — Android-ის centerCrop */
+.hero .bg .pic, .d-head .bg .pic { object-position: center center; }
+/* ბადეში ყველა ბარათი ერთი ზომის (გრძელი სათაური სვეტს აღარ აფართოებს) */
+.grid { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.grid.wide { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.grid.genres { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.grid > * { min-width: 0; }
+.tops-small { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+/* ფოკუსი კარგად ჩანდეს: თეთრი ჩარჩო + გადიდება + ჩრდილი */
+.card.focus .img, .ep.focus .img, .tcard.focus, .genre.focus, .daily-poster.focus { box-shadow: 0 0 0 5px #fff, 0 18px 40px rgba(0,0,0,.7); }
+.card.focus .t, .ep.focus .t, .person.focus .t { color: #fff; font-weight: bold; }
+.person.focus .ph { box-shadow: 0 0 0 5px #fff, 0 18px 40px rgba(0,0,0,.7); }
+.btn.focus, .tab.focus, .tline.focus, .chip.focus, .fitem.focus, .fgo.focus, .nav.focus, .ritem.focus, .pill.focus, .opt.focus, .rrow.focus,
+.more-btn.focus, .star.focus, .st-opt.focus, .dir.focus, .field.focus, .search-box.focus, .pbtn.focus { box-shadow: 0 0 0 4px #fff; }
+.bar.focus .col { box-shadow: 0 0 0 4px #fff; }

@@ -1,0 +1,14 @@
+{
+  "version": "1.2",
+  "notes": "პირველი ვერსია: Android-ის სრული ასლი",
+  "css": [
+    "css/app.css"
+  ],
+  "js": [
+    "js/i18n.js",
+    "js/core.js",
+    "js/screens.js",
+    "js/player.js",
+    "js/main.js"
+  ]
+}
