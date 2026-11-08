@@ -13,6 +13,13 @@ body.playing { background: transparent; }
 svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 .f { outline: none; cursor: pointer; }
 .pic { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+/* ჯერ პატარა ფოტო (ოდნავ ბუნდოვანი), სრული მის თავზე რბილად ჩნდება — Android-ის crossfade */
+.pic.lo { filter: blur(6px); transform: scale(1.04); }
+.pic.hi { opacity: 0; transition: opacity .35s ease; }
+.pic.hi.ok { opacity: 1; }
+/* სანამ რომელიმე ჩაიტვირთება — ჩატვირთვის ეფექტი (Android-ის ShimmerDrawable) */
+.card .img, .ep .img, .tcard, .daily-poster, .ec-img, .genre { background: linear-gradient(100deg, #2A323F 30%, #364050 50%, #2A323F 70%); background-size: 300% 100%; animation: shimmer 1.4s infinite linear; }
+@keyframes shimmer { from { background-position: 100% 0; } to { background-position: 0 0; } }
 .ic { display: inline-block; width: 1em; height: 1em; background: currentColor; -webkit-mask: var(--i) center / contain no-repeat; mask: var(--i) center / contain no-repeat; flex: none; }
 .orig, .card .o, .meta, .rate { font-family: Roboto, "Samsung One", sans-serif; }
 

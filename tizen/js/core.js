@@ -242,7 +242,20 @@ var HEART = '<svg viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-9.3-9.2C1.4 7.9
 var PERSON_SVG = '<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>';
 var TV_SVG = '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="12" rx="2"/><path d="M8 21h8"/></svg>';
 // სურათი <img>-ით და Referer-ის გარეშე — საიტი სხვა მისამართიდან მოთხოვნილ სურათს ბლოკავს
-function pic(url, cls) { return url ? '<img class="pic' + (cls ? ' ' + cls : '') + '" referrerpolicy="no-referrer" src="' + esc(url) + '" onerror="this.remove()">' : ''; }
+// ჯერ პატარა ზომა (საიტის WordPress-ის ასლი: პოსტერი 200×300, განიერი 300×169 — ~17KB), მერე სრული რბილად ჩნდება
+function smallVariant(url) {
+  var m = /^(.*\/wp-content\/uploads\/.+?)(-(\d+)x(\d+))?(\.(?:jpe?g|png|webp))(\?.*)?$/i.exec(url || '');
+  if (!m) return null;
+  var w = +m[3] || 0, h = +m[4] || 0, size = h > w ? '-200x300' : '-300x169';
+  if (m[2] === size || (w && w <= 300)) return null;
+  return m[1] + size + m[5] + (m[6] || '');
+}
+function pic(url, cls) {
+  if (!url) return '';
+  var lo = smallVariant(url), c = 'pic' + (cls ? ' ' + cls : '');
+  return (lo ? '<img class="' + c + ' lo" referrerpolicy="no-referrer" src="' + esc(lo) + '" onerror="this.remove()">' : '') +
+    '<img class="' + c + ' hi" referrerpolicy="no-referrer" src="' + esc(url) + '" onload="this.classList.add(\'ok\')" onerror="this.remove()">';
+}
 function langTags(card) {
   if (!card) return [];
   if (card.tags && card.tags.length) return card.tags;
