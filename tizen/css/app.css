@@ -55,9 +55,13 @@ svg { width: 1em; height: 1em; fill: none; stroke: currentColor; stroke-width: 2
 .ritem { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 93px; margin-bottom: 6px; border-radius: 13px; color: var(--brand2); }
 .ritem .ic { font-size: 38px; }
 .ritem span { font-size: 15px; color: rgba(255,255,255,.7); margin-top: 6px; white-space: nowrap; }
-.ritem.on { background: var(--surface); }
+/* მიმდინარე სექცია: აქცენტ-ნიშანი (ფერადი აიქონი + გვერდითი ზოლი), არა შევსებული ფონი —
+   თორემ ფოკუსის ფონს ემსგავსება და ორი ელემენტი ერთდროულად „მონიშნული" ჩანს */
+.ritem.on { background: none; }
+.ritem.on .ic, .ritem.on span { color: var(--brand2); }
+#rail.open .ritem.on { box-shadow: inset 4px 0 0 var(--brand2); }
 .ritem.focus { background: var(--grad); color: #fff; }
-.ritem.focus span { color: #fff; }
+.ritem.focus .ic, .ritem.focus span { color: #fff; }   /* ფოკუსი ყოველთვის იმარჯვებს */
 #rail.open .ritem { flex-direction: row; justify-content: flex-start; height: 80px; padding: 0 19px 0 26px; }
 #rail.open .ritem span { font-size: 26px; color: #fff; margin: 0 0 0 26px; }
 .rsep { height: 2px; background: rgba(255,255,255,.08); margin: 6px 13px 13px; }

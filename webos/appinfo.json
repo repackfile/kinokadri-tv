@@ -1,0 +1,16 @@
+{
+  "id": "co.kinokadri.tv",
+  "version": "1.5.0",
+  "vendor": "KinoKadri",
+  "type": "web",
+  "main": "index.html",
+  "title": "KinoKadri",
+  "icon": "icon.png",
+  "largeIcon": "icon.png",
+  "iconColor": "#1D232D",
+  "bgColor": "#1D232D",
+  "disableBackHistoryAPI": true,
+  "handlesRelaunch": true,
+  "supportPortraitMode": false,
+  "requiredACG": []
+}

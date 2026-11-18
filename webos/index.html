@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1920, user-scalable=no">
+<!-- საიტი სხვა საიტიდან (Referer) მოთხოვნილ სურათს ბლოკავს -->
+<meta name="referrer" content="no-referrer">
+<title>KinoKadri</title>
+<style>html, body { margin: 0; width: 1920px; height: 1080px; background: #1D232D; overflow: hidden; }</style>
+<!-- webOS ოპტიმიზაცია (app.css-ს გადაფარავს !important-ით) -->
+<link rel="stylesheet" href="css/webos.css">
+</head>
+<body>
+<!-- webOS: AVPlay-ის ნაცვლად HTML5 <video> (#av CSS უკვე სრულ ეკრანზე, UI-ის უკან ალაგებს) -->
+<video id="av" playsinline webkit-playsinline style="object-fit:contain;background:#000"></video>
+
+<!-- ზედა მენიუ (Android-ის top_bar) -->
+<header id="top" hidden>
+  <div class="wordmark"><img src="img/logo_mark.png" alt=""><span>KINOKADRI</span></div>
+  <nav id="nav"></nav>
+  <div id="top-icons"></div>
+</header>
+
+<!-- გვერდითა მენიუ (Android-ის rail) — ფოკუსზე იშლება -->
+<div id="rail-scrim" hidden></div>
+<aside id="rail" hidden>
+  <div class="rail-logo"><img class="mark" src="img/logo_mark.png" alt=""><div class="wordmark"><img src="img/logo_mark.png" alt=""><span>KINOKADRI</span></div></div>
+  <div id="rail-items"></div>
+</aside>
+
+<main id="view"></main>
+
+<div id="player" hidden>
+  <div class="p-top"><div id="p-title"></div></div>
+  <div id="p-dots" class="dots" hidden><i></i><i></i><i></i></div>
+  <div id="p-center">
+    <button class="f pbtn" id="p-rew"><svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a6 6 0 1 1-6 6H4a8 8 0 1 0 8-8z"/><text x="12" y="16.2" text-anchor="middle">10</text></svg></button>
+    <button class="f pbtn big" id="p-play"><svg viewBox="0 0 24 24" id="p-icon"><path d="M7 4.5v15l12-7.5z"/></svg></button>
+    <button class="f pbtn" id="p-ffw"><svg viewBox="0 0 24 24"><path d="M12 5V2l5 4-5 4V7a6 6 0 1 0 6 6h2a8 8 0 1 1-8-8z"/><text x="12" y="16.2" text-anchor="middle">10</text></svg></button>
+  </div>
+  <div id="p-subtext" hidden></div>
+  <div class="p-bottom">
+    <div id="p-thumb" hidden><div id="p-thumb-img"></div><span id="p-thumb-time"></span></div>
+    <div class="p-bar-row"><span id="p-pos">00:00</span><div class="f" id="p-bar"><div id="p-buf"></div><div id="p-played"></div><div id="p-knob"></div></div><span id="p-left">-00:00</span></div>
+    <div class="p-pills">
+      <a class="f pill" id="p-quality"><i class="ic" style="--i:url(../img/ic/quality.svg)"></i><span id="p-quality-t"></span></a>
+      <a class="f pill" id="p-audio" hidden><i class="ic" style="--i:url(../img/ic/wave.svg)"></i><span id="p-audio-t"></span></a>
+      <a class="f pill" id="p-subs" hidden><i class="ic" style="--i:url(../img/ic/cc.svg)"></i><span id="p-subs-t"></span></a>
+      <a class="f pill" id="p-speed-p"><i class="ic" style="--i:url(../img/ic/speed.svg)"></i><span id="p-speed">1x</span></a>
+      <a class="f pill" id="p-next" hidden><span id="p-next-t"></span><i class="ic" style="--i:url(../img/ic/next.svg)"></i></a>
+    </div>
+  </div>
+  <div id="p-notice" hidden></div>
+  <div id="p-error" hidden><div id="p-error-t"></div><div id="p-error-s"></div><a class="f btn primary" id="p-error-a"></a></div>
+</div>
+
+<div id="dialog" hidden><div class="dlg"><h3 id="dlg-title"></h3><div id="dlg-list"></div></div></div>
+<div id="toast" hidden></div>
+
+<!-- webOS თავსებადობა: hls.js + AVPlay shim + tizen shim (boot.js-მდე) -->
+<script src="js/hls.min.js"></script>
+<script src="js/avshim.js"></script>
+<!-- კოდს (css + js) ჩამტვირთავი რთავს: აპში ჩაშენებულს (STORE=true) -->
+<script src="js/boot.js"></script>
+</body>
+</html>

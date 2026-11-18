@@ -1,0 +1,31 @@
+/* webos.css — webOS ბიუჯეტური SoC-ის ოპტიმიზაცია (app.css-ის მერე იტვირთება).
+ * მიზანი: ფოკუსის/სქროლის ჭედვის მოხსნა სუსტ GPU-ზე. */
+
+/* 1) ჩამტვირთავი სურათის blur placeholder — GPU-ზე ძვირია, ვხსნით (მხოლოდ გაფერმკრთალება რჩება) */
+.pic.lo { filter: none !important; transform: none !important; }
+
+/* 2) ფოკუსის გამოკვეთა: იაფი თეთრი რგოლი რჩება, მძიმე 40px რბილი ჩრდილი მცირდება */
+.card.focus .img,
+.ep.focus .img,
+.tcard.focus,
+.genre.focus,
+.daily-poster.focus { box-shadow: 0 0 0 5px #fff !important; }
+.person.focus .ph { box-shadow: 0 0 0 5px #fff !important; }
+.dlg { box-shadow: 0 10px 28px rgba(0,0,0,.55) !important; }
+
+/* 3) სქროლის კონტეინერები და ფოკუსირებული ბარათი — ცალკე GPU ფენაზე (გლუვი scale/scroll) */
+.scroll > .inner,
+.strip { will-change: transform; transform: translateZ(0); }
+.card, .tcard, .ep, .daily-poster, .genre, .person { backface-visibility: hidden; }
+.card.focus,
+.tcard.focus,
+.ep.focus,
+.daily-poster.focus,
+.genre.focus,
+.person.focus { will-change: transform; }
+
+/* 4) repaint-ის ფარგლის შეზღუდვა (layout მხოლოდ — paint-ს არ ვჭრით, ფოკუსის რგოლი რომ არ მოიჭრას) */
+.card, .tcard, .ep, .genre { contain: layout style; }
+
+/* 5) ვიდეო ზედაპირი — აპარატურული კომპოზიცია */
+#av { transform: translateZ(0); }

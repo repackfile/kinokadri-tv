@@ -323,7 +323,9 @@ var Nav = {
   },
   focus: function (el, noScroll) {
     if (!el) return;
-    if (Nav.cur && Nav.cur !== el) { Nav.cur.classList.remove('focus'); }
+    // ყველა გაჭედილი .focus-ის მოხსნა (არა მხოლოდ Nav.cur) — თორემ ორი ელემენტი რჩება მონიშნული
+    var prev = document.getElementsByClassName('focus');
+    for (var i = prev.length - 1; i >= 0; i--) { if (prev[i] !== el) prev[i].classList.remove('focus'); }
     Nav.cur = el; el.classList.add('focus');
     var strip = el.closest('.strip, .seasons, .chips-line');
     if (strip) strip.dataset.last = Array.prototype.indexOf.call(strip.children, el);
